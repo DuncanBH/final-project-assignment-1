@@ -1,0 +1,43 @@
+services:
+  images:
+    build: images-service
+    hostname: images-service
+    environment:
+      -SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - imageMongo
+
+  posts:
+    build: posts-service
+    hostname: posts-service
+    environment:
+      -SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - postMongo
+
+  api-gateway:
+    build: api-gateway
+    hostname: api-gateway
+    environment:
+      -SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - images
+      - posts
+
+  imageMongo:
+    container_name: imageMongo
+    hostname: imageMongo
+    image: mongo
+    mem_limit: 350m
+    ports:
+      - "27017:27017"
+
+  postMongo:
+    container_name: postMongo
+    hostname: postMongo
+    image: mongo
+    mem_limit: 350m
+    ports:
+      - "27018:27018"
