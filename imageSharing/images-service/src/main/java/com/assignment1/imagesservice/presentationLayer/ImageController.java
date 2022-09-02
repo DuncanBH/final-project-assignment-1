@@ -1,8 +1,12 @@
 package com.assignment1.imagesservice.presentationLayer;
 
 import com.assignment1.imagesservice.businessLayer.ImageService;
+import com.assignment1.imagesservice.dataMappingLayer.ImageRequestModel;
+import com.assignment1.imagesservice.dataMappingLayer.ImageResponseModel;
 import com.assignment1.imagesservice.datalayer.Image;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,15 +20,12 @@ public class ImageController {
     private ImageService imageService;
 
     @GetMapping("/{imageId}")
-    public String getImage(@PathVariable Integer imageId){
-        Image image = imageService.getImage(imageId);
-
-        return Base64.getEncoder().encodeToString(image.getImage().getData());
+    public ResponseEntity<ImageResponseModel> getImage(@PathVariable Integer imageId){
+        return ResponseEntity.status(HttpStatus.OK).body(imageService.getImage(imageId));
     }
 
     @PostMapping()
-    public Integer addPhoto(@RequestBody MultipartFile file) throws IOException {
-        Integer imageId = imageService.addPhoto(file);
-        return imageId;
+    public ResponseEntity<ImageResponseModel> addPhoto(@RequestBody ImageRequestModel file) throws IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(imageService.addPhoto(file));
     }
 }
