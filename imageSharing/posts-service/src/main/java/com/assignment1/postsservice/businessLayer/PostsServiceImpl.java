@@ -1,5 +1,9 @@
 package com.assignment1.postsservice.businessLayer;
 
+import com.assignment1.postsservice.dataMappingLayer.PostRequestMapper;
+import com.assignment1.postsservice.dataMappingLayer.PostRequestModel;
+import com.assignment1.postsservice.dataMappingLayer.PostResponseMapper;
+import com.assignment1.postsservice.dataMappingLayer.PostResponseModel;
 import com.assignment1.postsservice.datalayer.Post;
 import com.assignment1.postsservice.datalayer.PostRepository;
 import com.assignment1.postsservice.util.ShortIdGen;
@@ -12,19 +16,25 @@ import java.util.List;
 public class PostsServiceImpl implements PostsService {
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private PostResponseMapper postResponseMapper;
+    @Autowired
+    private PostRequestMapper postRequestMapper;
 
     @Override
-    public List<Post> findAllPosts() {
-        return postRepository.findAll();
+    public List<PostResponseModel> findAllPosts() {
+        return postResponseMapper.entityListToResponseModelList(postRepository.findAll());
     }
 
     @Override
-    public Post findPostByPostId(Integer postId) {
-        return postRepository.findPostByPostId(postId);
+    public PostResponseModel findPostByPostId(Integer postId) {
+        return postResponseMapper.entityToResponseModel(postRepository.findPostByPostId(postId));
     }
 
     @Override
-    public Post createPost(Post post) {
+    public PostResponseModel createPost(PostRequestModel postRequestModel) {
+        Post post = new Post();
+
         Integer postId;
 
         do {
@@ -32,18 +42,22 @@ public class PostsServiceImpl implements PostsService {
         } while (postRepository.existsPostByPostId(postId));
 
         post.setPostId(postId);
+        post.setImageId(postRequestModel.getImageId());
+        post.setCaption(postRequestModel.getCaption());
 
-        return postRepository.save(post);
+        return postResponseMapper.entityToResponseModel(postRepository.save(post));
     }
 
     @Override
-    public Post updatePost(Post post, Integer postId) {
+    public PostResponseModel updatePost(PostRequestModel post, Integer postId) {
         Post inDb = postRepository.findPostByPostId(postId);
 
         inDb.setCaption(post.getCaption());
         inDb.setImageId(post.getImageId());
 
-        return postRepository.save(inDb);
+        inDb = postRepository.save(inDb);
+
+        return postResponseMapper.entityToResponseModel(inDb);
     }
 
     @Override
