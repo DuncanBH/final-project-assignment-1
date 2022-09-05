@@ -6,6 +6,7 @@ import com.assignment1.imagesservice.dataMappingLayer.ImageResponseMapper;
 import com.assignment1.imagesservice.dataMappingLayer.ImageResponseModel;
 import com.assignment1.imagesservice.datalayer.Image;
 import com.assignment1.imagesservice.datalayer.ImageRepository;
+import com.assignment1.imagesservice.util.MapperUtil;
 import com.assignment1.imagesservice.util.ShortIdGen;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,43 +27,18 @@ public class ImageServiceImpl implements ImageService {
 
     @Autowired
     private ImageRepository imageRepository;
-    @Autowired
-    private ImageResponseMapper imageResponseMapper;
-    @Autowired
-    private ImageRequestMapper imageRequestMapper;
 
     @Override
-    public ImageResponseModel addPhoto(ImageRequestModel imageRequestModel) throws IOException {
-        Image image = new Image();
-        image.setImage(new Binary(BsonBinarySubType.BINARY, imageRequestModel.getFile().getBytes()));
-
-        Integer shortID;
-
-        do{
-            shortID = ShortIdGen.getShortId();
-        } while (imageRepository.existsImageByImageId(shortID));
-
-        image.setImageId(shortID);
-
-        image = imageRepository.insert(image);
-        return imageResponseMapper.entityToResponseModel(image);
+    public Mono<ImageResponseModel> addPhoto(Mono<ImageRequestModel> imageRequestModel) {
+            return  imageRequestModel
+                .map(MapperUtil::requestModelToEntity)
+                .flatMap(imageRepository::insert)
+                .map(MapperUtil::entityToResponseModel);
     }
 
     @Override
-    public ImageResponseModel getImage(Integer imageId) {
-        Image image = imageRepository.findImageByImageId(imageId);
-
-        ImageResponseModel imageResponseModel = imageResponseMapper.entityToResponseModel(image);
-
-        String binString = image.getImage().toString();
-
-        int binInt = Integer.parseInt(binString, 2);
-        ByteBuffer bytes = ByteBuffer.allocate(2).putInt(binInt);
-
-        byte[] bytesArr = bytes.array();
-
-        imageResponseModel.setBytes(bytesArr);
-
-        return imageResponseMapper.entityToResponseModel(imageRepository.findImageByImageId(imageId));
+    public Mono<ImageResponseModel> getImage(Integer imageId) {
+        return imageRepository.findImageByImageId(imageId)
+                .map(MapperUtil::entityToResponseModel);
     }
 }
