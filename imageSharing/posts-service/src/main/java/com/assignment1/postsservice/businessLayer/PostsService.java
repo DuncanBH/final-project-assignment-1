@@ -2,14 +2,13 @@ package com.assignment1.postsservice.businessLayer;
 
 import com.assignment1.postsservice.dataMappingLayer.PostRequestModel;
 import com.assignment1.postsservice.dataMappingLayer.PostResponseModel;
-import com.assignment1.postsservice.datalayer.Post;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface PostsService {
-    List<PostResponseModel> findAllPosts();
-    PostResponseModel findPostByPostId(Integer postId);
-    PostResponseModel createPost(PostRequestModel post);
-    PostResponseModel updatePost(PostRequestModel post, Integer postId);
-    void deletePost(Integer postId);
+    Flux<PostResponseModel> findAllPosts();
+    Mono<PostResponseModel> findPostByPostId(Integer postId);
+    Mono<PostResponseModel> createPost(Mono<PostRequestModel> post);
+    Mono<PostResponseModel> updatePost(Mono<PostRequestModel> post, Integer postId);
+    Mono<Void> deletePost(Integer postId);
 }

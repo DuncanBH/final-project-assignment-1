@@ -1,39 +1,40 @@
 package com.assignment1.postsservice.businessLayer;
 
-import com.assignment1.postsservice.dataMappingLayer.PostRequestMapper;
 import com.assignment1.postsservice.dataMappingLayer.PostRequestModel;
-import com.assignment1.postsservice.dataMappingLayer.PostResponseMapper;
 import com.assignment1.postsservice.dataMappingLayer.PostResponseModel;
-import com.assignment1.postsservice.datalayer.Post;
 import com.assignment1.postsservice.datalayer.PostRepository;
+import com.assignment1.postsservice.util.MapperUtil;
 import com.assignment1.postsservice.util.ShortIdGen;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class PostsServiceImpl implements PostsService {
     @Autowired
     private PostRepository postRepository;
-    @Autowired
-    private PostResponseMapper postResponseMapper;
-    @Autowired
-    private PostRequestMapper postRequestMapper;
 
     @Override
-    public List<PostResponseModel> findAllPosts() {
-        return postResponseMapper.entityListToResponseModelList(postRepository.findAll());
+    public Flux<PostResponseModel> findAllPosts() {
+        //return postResponseMapper.entityListToResponseModelList(postRepository.findAll());
+        return postRepository
+                .findAll()
+                .map(MapperUtil::entityToResponseModel);
     }
 
     @Override
-    public PostResponseModel findPostByPostId(Integer postId) {
-        return postResponseMapper.entityToResponseModel(postRepository.findPostByPostId(postId));
+    public Mono<PostResponseModel> findPostByPostId(Integer postId) {
+        //return postResponseMapper.entityToResponseModel(postRepository.findPostByPostId(postId));
+        return postRepository
+                .findPostByPostId(postId)
+                .map(MapperUtil::entityToResponseModel);
     }
 
     @Override
-    public PostResponseModel createPost(PostRequestModel postRequestModel) {
-        Post post = new Post();
+    public Mono<PostResponseModel> createPost(Mono<PostRequestModel> postRequestModel) {
+        /*Post post = new Post();
 
         Integer postId;
 
@@ -45,23 +46,36 @@ public class PostsServiceImpl implements PostsService {
         post.setImageId(postRequestModel.getImageId());
         post.setCaption(postRequestModel.getCaption());
 
-        return postResponseMapper.entityToResponseModel(postRepository.save(post));
+        return postResponseMapper.entityToResponseModel(postRepository.save(post));*/
+        return postRequestModel
+                .map(MapperUtil::requestModelToEntity)
+                .doOnNext(e -> e.setPostId(ShortIdGen.getShortId()))
+                .flatMap(postRepository::insert)
+                .map(MapperUtil::entityToResponseModel);
     }
 
     @Override
-    public PostResponseModel updatePost(PostRequestModel post, Integer postId) {
-        Post inDb = postRepository.findPostByPostId(postId);
+    public Mono<PostResponseModel> updatePost(Mono<PostRequestModel> post, Integer postId) {
+        /*Post inDb = postRepository.findPostByPostId(postId);
 
         inDb.setCaption(post.getCaption());
         inDb.setImageId(post.getImageId());
 
         inDb = postRepository.save(inDb);
 
-        return postResponseMapper.entityToResponseModel(inDb);
+        return postResponseMapper.entityToResponseModel(inDb);*/
+        return postRepository.findPostByPostId(postId)
+                .flatMap(p -> post
+                        .map(MapperUtil::requestModelToEntity)
+                        .doOnNext(e -> e.setImageId(p.getImageId()))
+                        .doOnNext(e -> e.setId(p.getId())))
+                .flatMap(postRepository::insert)
+                .map(MapperUtil::entityToResponseModel);
     }
 
     @Override
-    public void deletePost(Integer postId) {
-        postRepository.deletePostByPostId(postId);
+    public Mono<Void> deletePost(Integer postId) {
+        //postRepository.deletePostByPostId(postId);
+        return postRepository.deletePostByPostId(postId);
     }
 }

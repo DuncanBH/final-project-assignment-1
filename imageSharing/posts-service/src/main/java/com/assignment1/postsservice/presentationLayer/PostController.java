@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -18,28 +20,33 @@ public class PostController {
     private PostsService postsService;
 
     @GetMapping()
-    public ResponseEntity<List<PostResponseModel>> getAll(){
-        return ResponseEntity.status(HttpStatus.OK).body(postsService.findAllPosts());
+    public Flux<PostResponseModel> getAll(){
+        return postsService.findAllPosts();
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponseModel> getPost(@PathVariable Integer postId){
-        return ResponseEntity.status(HttpStatus.OK).body(postsService.findPostByPostId(postId));
+    public Mono<ResponseEntity<PostResponseModel>> getPost(@PathVariable Integer postId){
+        return postsService.findPostByPostId(postId)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PostMapping()
-    public ResponseEntity<PostResponseModel> createPost(@RequestBody PostRequestModel post){
-        return ResponseEntity.status(HttpStatus.CREATED).body(postsService.createPost(post));
+    public  Mono<ResponseEntity<PostResponseModel>> createPost(@RequestBody Mono<PostRequestModel> post){
+        return postsService.createPost(post)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponseModel> updatePost(@PathVariable Integer postId, @RequestBody PostRequestModel post){
-        return ResponseEntity.status(HttpStatus.OK).body(postsService.updatePost(post, postId));
+    public  Mono<ResponseEntity<PostResponseModel>> updatePost(@PathVariable Integer postId, @RequestBody Mono<PostRequestModel> post){
+        return postsService.updatePost(post, postId)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Integer postId){
-        postsService.deletePost(postId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    public Mono<Void> deletePost(@PathVariable Integer postId){
+        return postsService.deletePost(postId);
     }
 }
