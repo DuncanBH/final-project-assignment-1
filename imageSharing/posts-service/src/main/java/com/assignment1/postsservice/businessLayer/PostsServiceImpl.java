@@ -2,10 +2,9 @@ package com.assignment1.postsservice.businessLayer;
 
 import com.assignment1.postsservice.dataMappingLayer.PostRequestModel;
 import com.assignment1.postsservice.dataMappingLayer.PostResponseModel;
-import com.assignment1.postsservice.datalayer.PostRepository;
+import com.assignment1.postsservice.dataLayer.PostRepository;
 import com.assignment1.postsservice.util.MapperUtil;
 import com.assignment1.postsservice.util.ShortIdGen;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -68,7 +67,7 @@ public class PostsServiceImpl implements PostsService {
                 .flatMap(p -> post
                         .map(MapperUtil::requestModelToEntity)
                         .doOnNext(e -> e.setImageId(p.getImageId()))
-                        .doOnNext(e -> e.setId(p.getId())))
+                        .doOnNext(e -> e.setCaption(p.getCaption())))
                 .flatMap(postRepository::insert)
                 .map(MapperUtil::entityToResponseModel);
     }
@@ -77,5 +76,12 @@ public class PostsServiceImpl implements PostsService {
     public Mono<Void> deletePost(Integer postId) {
         //postRepository.deletePostByPostId(postId);
         return postRepository.deletePostByPostId(postId);
+    }
+
+    @Override
+    public Flux<PostResponseModel> getPostsByChannel(Integer channel) {
+        return postRepository
+                .findPostsByChannel(channel)
+                .map(MapperUtil::entityToResponseModel);
     }
 }

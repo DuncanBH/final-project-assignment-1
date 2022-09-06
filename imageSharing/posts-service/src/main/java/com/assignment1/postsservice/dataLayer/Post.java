@@ -1,4 +1,4 @@
-package com.assignment1.postsservice.datalayer;
+package com.assignment1.postsservice.dataLayer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +20,5 @@ public class Post {
 
     private Integer imageId;
     private String caption;
+    private Integer channel;
 }

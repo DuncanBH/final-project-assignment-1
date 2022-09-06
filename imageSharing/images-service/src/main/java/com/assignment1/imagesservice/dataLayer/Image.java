@@ -1,9 +1,8 @@
-package com.assignment1.imagesservice.datalayer;
+package com.assignment1.imagesservice.dataLayer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

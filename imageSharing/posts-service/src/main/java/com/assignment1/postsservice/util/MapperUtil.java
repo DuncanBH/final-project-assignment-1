@@ -2,7 +2,7 @@ package com.assignment1.postsservice.util;
 
 import com.assignment1.postsservice.dataMappingLayer.PostRequestModel;
 import com.assignment1.postsservice.dataMappingLayer.PostResponseModel;
-import com.assignment1.postsservice.datalayer.Post;
+import com.assignment1.postsservice.dataLayer.Post;
 import org.springframework.beans.BeanUtils;
 
 public class MapperUtil {

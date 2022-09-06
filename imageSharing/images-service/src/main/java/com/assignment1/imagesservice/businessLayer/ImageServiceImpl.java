@@ -2,7 +2,7 @@ package com.assignment1.imagesservice.businessLayer;
 
 import com.assignment1.imagesservice.dataMappingLayer.ImageRequestModel;
 import com.assignment1.imagesservice.dataMappingLayer.ImageResponseModel;
-import com.assignment1.imagesservice.datalayer.ImageRepository;
+import com.assignment1.imagesservice.dataLayer.ImageRepository;
 import com.assignment1.imagesservice.util.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

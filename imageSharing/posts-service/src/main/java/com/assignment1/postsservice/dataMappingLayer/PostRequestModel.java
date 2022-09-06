@@ -10,4 +10,5 @@ import lombok.Setter;
 public class PostRequestModel {
     private Integer imageId;
     private String caption;
+    private Integer channel;
 }

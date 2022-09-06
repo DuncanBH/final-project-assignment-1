@@ -1,4 +1,4 @@
-package com.assignment1.imagesservice.datalayer;
+package com.assignment1.imagesservice.dataLayer;
 
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
