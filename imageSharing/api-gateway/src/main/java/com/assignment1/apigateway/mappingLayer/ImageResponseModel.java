@@ -1,4 +1,4 @@
-package com.assignment1.imagesservice.dataMappingLayer;
+package com.assignment1.apigateway.mappingLayer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.assignment1.imagesservice.dataMappingLayer;
+package com.assignment1.apigateway.mappingLayer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class ImageResponseModel {
+public class PostRequestModel {
     private Integer imageId;
-    private byte[] bytes;
+    private String caption;
+    private Integer channel;
 }
+

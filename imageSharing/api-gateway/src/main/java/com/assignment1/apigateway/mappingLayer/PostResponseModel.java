@@ -1,4 +1,4 @@
-package com.assignment1.postsservice.dataMappingLayer;
+package com.assignment1.apigateway.mappingLayer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,3 +13,4 @@ public class PostResponseModel {
     private Integer imageId;
     private String caption;
 }
+

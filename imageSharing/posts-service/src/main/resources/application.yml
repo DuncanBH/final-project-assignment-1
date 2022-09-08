@@ -15,7 +15,7 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: images
+      database: posts
       username: root
       password: password
       authentication-database: admin
@@ -29,7 +29,7 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: images
+      database: posts
       username: root
       password: password
       authentication-database: admin
@@ -42,7 +42,7 @@ spring:
     mongodb:
       host: mongo
       port: 27017
-      database: images
+      database: posts
       username: root
       password: password
       authentication-database: admin

@@ -11,6 +11,5 @@ public interface PostsService {
     Mono<PostResponseModel> createPost(Mono<PostRequestModel> post);
     Mono<PostResponseModel> updatePost(Mono<PostRequestModel> post, Integer postId);
     Mono<Void> deletePost(Integer postId);
-
     Flux<PostResponseModel> getPostsByChannel(Integer channel);
 }

@@ -28,15 +28,15 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public  Mono<ResponseEntity<PostResponseModel>> createPost(@RequestBody Mono<PostRequestModel> post){
-        return postsService.createPost(post)
+    public  Mono<ResponseEntity<PostResponseModel>> createPost(@RequestBody PostRequestModel post){
+        return postsService.createPost(Mono.just(post))
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/posts/{postId}")
-    public  Mono<ResponseEntity<PostResponseModel>> updatePost(@PathVariable Integer postId, @RequestBody Mono<PostRequestModel> post){
-        return postsService.updatePost(post, postId)
+    public  Mono<ResponseEntity<PostResponseModel>> updatePost(@PathVariable Integer postId, @RequestBody PostRequestModel post){
+        return postsService.updatePost(Mono.just(post), postId)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
@@ -47,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping("/channels/{channel}/posts")
-    public Flux<PostResponseModel> getPostsByCHannel(@PathVariable Integer channel){
+    public Flux<PostResponseModel> getPostsByChannel(@PathVariable Integer channel){
         return postsService.getPostsByChannel(channel);
     }
 }

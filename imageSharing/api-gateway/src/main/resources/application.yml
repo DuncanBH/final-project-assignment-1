@@ -1,0 +1,32 @@
+server:
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    com.assignment1: DEBUG
+
+app:
+  images:
+    host: localhost
+    port: 7001
+  posts:
+    host: localhost
+    port: 7002
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+server.port: 8080
+
+app:
+  images:
+    host: images
+    port: 8080
+  posts:
+    host: posts
+    port: 8080
