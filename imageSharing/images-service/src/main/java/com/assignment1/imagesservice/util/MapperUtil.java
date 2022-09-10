@@ -19,12 +19,12 @@ public class MapperUtil {
 
     public static Image requestModelToEntity(ImageRequestModel imageRequestModel){
         Image image = new Image();
-        try {
-            image.setImage(new Binary(BsonBinarySubType.BINARY, imageRequestModel.getFile().getBytes()));
-        } catch (IOException e){
-            System.out.println(e.getMessage());
-        }
+        image.setImage(imageRequestModel.getFile());
         image.setImageId(ShortIdGen.getShortId());
         return image;
+    }
+
+    public static Integer getImageId(ImageResponseModel imageResponseModel){
+        return imageResponseModel.getImageId();
     }
 }

@@ -15,11 +15,12 @@ public class ImageServiceImpl implements ImageService {
     private ImageRepository imageRepository;
 
     @Override
-    public Mono<ImageResponseModel> addPhoto(Mono<ImageRequestModel> imageRequestModel) {
+    public Mono<Integer> addPhoto(Mono<ImageRequestModel> imageRequestModel) {
             return  imageRequestModel
                 .map(MapperUtil::requestModelToEntity)
                 .flatMap(imageRepository::insert)
-                .map(MapperUtil::entityToResponseModel);
+                .map(MapperUtil::entityToResponseModel)
+                .map(MapperUtil::getImageId);
     }
 
     @Override

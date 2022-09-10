@@ -25,8 +25,8 @@ server.port: 8080
 
 app:
   images:
-    host: images
+    host: images-service
     port: 8080
   posts:
-    host: posts
+    host: posts-service
     port: 8080

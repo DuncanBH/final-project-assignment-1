@@ -7,6 +7,7 @@ import com.assignment1.postsservice.util.MapperUtil;
 import com.assignment1.postsservice.util.ShortIdGen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -66,13 +67,14 @@ public class PostsServiceImpl implements PostsService {
         return postRepository.findPostByPostId(postId)
                 .flatMap(p -> post
                         .map(MapperUtil::requestModelToEntity)
-                        .doOnNext(e -> e.setImageId(p.getImageId()))
-                        .doOnNext(e -> e.setCaption(p.getCaption())))
-                .flatMap(postRepository::insert)
+                        .doOnNext(e -> e.setId(p.getId()))
+                        .doOnNext(e -> e.setPostId(p.getPostId())))
+                .flatMap(postRepository::save)
                 .map(MapperUtil::entityToResponseModel);
     }
 
     @Override
+    @Transactional
     public Mono<Void> deletePost(Integer postId) {
         //postRepository.deletePostByPostId(postId);
         return postRepository.deletePostByPostId(postId);

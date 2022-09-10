@@ -3,12 +3,13 @@ package com.assignment1.apigateway.mappingLayer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Setter
 @Getter
 @NoArgsConstructor
-public class PostAggregate {
-    private Integer postId;
+public class PostAggregateRequestModel {
     private String caption;
-    private byte[] bytes;
+    private Integer channel;
+    private Integer imageId;
 }

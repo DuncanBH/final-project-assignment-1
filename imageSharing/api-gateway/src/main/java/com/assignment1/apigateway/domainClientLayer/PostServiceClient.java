@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -55,13 +56,13 @@ public class PostServiceClient {
         }
     }
 
-    public Mono<PostResponseModel> createPost(Mono<PostRequestModel> postRequestModelMono){
+    public Mono<PostResponseModel> createPost(PostRequestModel postRequestModel){
         try{
             return webClient
                     .build()
                     .post()
                     .uri(url + "/posts")
-                    .body(postRequestModelMono, PostRequestModel.class)
+                    .body(Mono.just(postRequestModel), PostRequestModel.class)
                     .retrieve()
                     .bodyToMono(PostResponseModel.class);
         } catch (HttpClientErrorException e){
@@ -69,13 +70,13 @@ public class PostServiceClient {
         }
     }
 
-    public Mono<PostResponseModel> updatePost(Integer postId, Mono<PostRequestModel> postRequestModelMono){
+    public Mono<PostResponseModel> updatePost(Integer postId, PostRequestModel postRequestModel){
         try{
             return webClient
                     .build()
                     .put()
                     .uri(url + "/posts/" + postId)
-                    .body(postRequestModelMono, PostRequestModel.class)
+                    .body(Mono.just(postRequestModel), PostRequestModel.class)
                     .retrieve()
                     .bodyToMono(PostResponseModel.class);
         } catch (HttpClientErrorException e){
@@ -83,6 +84,7 @@ public class PostServiceClient {
         }
     }
 
+    @Transactional
     public Mono<Void> deletePost(Integer postId){
         try{
             return webClient

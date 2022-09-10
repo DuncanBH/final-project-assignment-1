@@ -12,8 +12,6 @@ services:
     hostname: posts-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-    ports:
-      - "8080:8080"
     depends_on:
       - mongo
 
@@ -22,6 +20,8 @@ services:
     hostname: api-gateway
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8080:8080"
     depends_on:
       - images-service
       - posts-service
