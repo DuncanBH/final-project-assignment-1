@@ -41,7 +41,7 @@ public class PostController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{postId}")
+    @DeleteMapping("/posts/{postId}")
     public Mono<Void> deletePost(@PathVariable Integer postId){
         return postsService.deletePost(postId);
     }
