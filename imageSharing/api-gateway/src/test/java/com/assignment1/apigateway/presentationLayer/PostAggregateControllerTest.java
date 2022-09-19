@@ -8,8 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserter;
+import org.springframework.web.reactive.function.BodyInserters;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -45,7 +53,6 @@ class PostAggregateControllerTest {
     void getAllPosts() {
 
     }
-
     @Test
     void getPostByPostId() {
         when(postServiceClient.getPostByPostId(any(Integer.class))).thenReturn(Mono.just(POST_RESPONSE_MODEL));
@@ -66,10 +73,29 @@ class PostAggregateControllerTest {
 
     @Test
     void updatePost() {
+        when(postServiceClient.updatePost(any(Integer.class), any(PostRequestModel.class))).thenReturn(Mono.just(POST_RESPONSE_MODEL));
+
+        webTestClient.put()
+                .uri(BASE_URI + "/posts/" + POST_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(POST_RESPONSE_MODEL), PostResponseModel.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.postId").isEqualTo(POST_ID);
     }
 
     @Test
     void deletePost() {
+        when(postServiceClient.deletePost(any(Integer.class))).thenReturn(Mono.empty());
+
+        webTestClient.delete()
+                .uri(BASE_URI + "/posts/" + POST_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody();
     }
 
     @Test
@@ -78,10 +104,34 @@ class PostAggregateControllerTest {
 
     @Test
     void getImage() {
+        when(imageServiceClient.getImage(any(Integer.class))).thenReturn(Mono.just(IMAGE_RESPONSE_MODEL));
+
+        webTestClient.get()
+                .uri(BASE_URI + "/images/" + IMAGE_ID)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.imageId").isEqualTo(IMAGE_ID);
     }
 
     @Test
     void createImage() {
+        when(imageServiceClient.addImage(any(byte[].class))).thenReturn(Mono.just(IMAGE_ID));
+
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        String header = String.format("form-data; name=%s; filename=%s", "file", "test.txt");
+        builder.part("file", new ByteArrayResource("ttt".getBytes())).header("Content-Disposition", header);
+
+        webTestClient.post()
+                .uri(BASE_URI + "/images")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(builder.build()))
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody();
     }
 
     private PostResponseModel buildPostResponseModel() {

@@ -50,7 +50,7 @@ public class PostAggregateController {
         return postAggregateService.deletePost(postId);
     }
 
-    @GetMapping("/channel/{channel}/posts")
+    @GetMapping("/channels/{channel}/posts")
     public Flux<PostResponseModel> getPostsByChannel(@PathVariable Integer channel){
         return postAggregateService.getPostByChannel(channel);
     }
