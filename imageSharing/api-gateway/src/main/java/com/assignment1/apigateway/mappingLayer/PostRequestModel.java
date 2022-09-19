@@ -1,10 +1,10 @@
 package com.assignment1.apigateway.mappingLayer;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Setter
 @Getter
 public class PostRequestModel {

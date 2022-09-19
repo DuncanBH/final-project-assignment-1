@@ -1,12 +1,12 @@
 package com.assignment1.apigateway.mappingLayer;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
 public class ImageResponseModel {
     private Integer imageId;
     private byte[] bytes;

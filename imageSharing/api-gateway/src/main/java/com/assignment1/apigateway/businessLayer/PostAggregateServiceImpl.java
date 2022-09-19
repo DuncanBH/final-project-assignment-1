@@ -4,11 +4,8 @@ import com.assignment1.apigateway.domainClientLayer.ImageServiceClient;
 import com.assignment1.apigateway.domainClientLayer.PostServiceClient;
 import com.assignment1.apigateway.mappingLayer.*;
 import com.assignment1.apigateway.util.MapperUtil;
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,7 +48,6 @@ public class PostAggregateServiceImpl implements PostAggregateService{
     }
 
     @Override
-    @Transactional
     public Mono<Void> deletePost(Integer postId) {
         return postServiceClient.deletePost(postId);
     }
