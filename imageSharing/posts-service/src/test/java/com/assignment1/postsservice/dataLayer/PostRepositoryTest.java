@@ -40,12 +40,27 @@ class PostRepositoryTest {
                     assertEquals(post.getCaption(),foundPost.getCaption());
                     assertEquals(post.getChannel(),foundPost.getChannel());
                 }).verifyComplete();
-
-
     }
 
     @Test
     void deletePostByPostId() {
+        Post post = new Post();
+        post.setPostId(1);
+        post.setCaption("Amaziiin Time");
+        post.setChannel(10);
+        post.setImageId(100);
+
+        Publisher<Post> setup =
+                postRepository.deleteAll().thenMany(postRepository.save(post));
+
+        Publisher<Void> delete = postRepository.deletePostByPostId(1);
+
+        Publisher<Void> composite = Mono.from(setup).thenMany(delete);
+
+        StepVerifier
+                .create(composite)
+                .expectNextCount(0)
+                .verifyComplete();
     }
 
     @Test
