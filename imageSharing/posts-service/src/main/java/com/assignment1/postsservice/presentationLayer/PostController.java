@@ -4,6 +4,7 @@ import com.assignment1.postsservice.businessLayer.PostsService;
 import com.assignment1.postsservice.dataMappingLayer.PostRequestModel;
 import com.assignment1.postsservice.dataMappingLayer.PostResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -42,6 +43,7 @@ public class PostController {
     }
 
     @DeleteMapping("/posts/{postId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<Void> deletePost(@PathVariable Integer postId){
         return postsService.deletePost(postId);
     }
