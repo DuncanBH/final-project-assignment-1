@@ -51,7 +51,15 @@ class PostAggregateControllerTest {
 
     @Test
     void getAllPosts() {
+        when(postServiceClient.getAll()).thenReturn(Flux.just(POST_RESPONSE_MODEL, POST_RESPONSE_MODEL));
 
+        webTestClient.get()
+                .uri(BASE_URI + "/posts")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody();
     }
     @Test
     void getPostByPostId() {
@@ -69,6 +77,17 @@ class PostAggregateControllerTest {
 
     @Test
     void createPost() {
+        when(postServiceClient.createPost(any(PostRequestModel.class))).thenReturn(Mono.just(POST_RESPONSE_MODEL));
+
+        webTestClient.post()
+                .uri(BASE_URI + "/posts")
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Mono.just(POST_RESPONSE_MODEL), PostResponseModel.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.postId").isEqualTo(POST_ID);
     }
 
     @Test
@@ -100,6 +119,15 @@ class PostAggregateControllerTest {
 
     @Test
     void getPostsByChannel() {
+        when(postServiceClient.getPostsByChannel(any(Integer.class))).thenReturn(Flux.just(POST_RESPONSE_MODEL, POST_RESPONSE_MODEL));
+
+        webTestClient.get()
+                .uri(BASE_URI + "/channels/" + CHANNEL + "/posts")
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody();
     }
 
     @Test

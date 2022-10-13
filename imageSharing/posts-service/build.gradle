@@ -9,6 +9,13 @@ plugins {
 ext{
     mapstructVersion = "1.4.2.Final"
 }
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 group = 'com.assignment1'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
@@ -26,7 +33,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.2.3'
     testImplementation 'io.projectreactor:reactor-test'
 }
 

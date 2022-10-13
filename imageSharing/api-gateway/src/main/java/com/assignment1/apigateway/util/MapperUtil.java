@@ -1,6 +1,10 @@
 package com.assignment1.apigateway.util;
 
-import com.assignment1.apigateway.mappingLayer.*;
+import com.assignment1.apigateway.mappingLayer.ImageRequestModel;
+import com.assignment1.apigateway.mappingLayer.PostAggregateRequestModel;
+import com.assignment1.apigateway.mappingLayer.PostResponseModel;
+import com.assignment1.apigateway.mappingLayer.PostRequestModel;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.multipart.MultipartFile;
 
