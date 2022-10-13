@@ -65,5 +65,26 @@ class PostRepositoryTest {
 
     @Test
     void findPostsByChannel() {
+        Post post = new Post();
+        post.setPostId(1);
+        post.setCaption("Amaziiin Time");
+        post.setChannel(10);
+        post.setImageId(100);
+
+        Publisher<Post> setup =
+                postRepository.deleteAll().thenMany(postRepository.save(post));
+
+        Publisher<Post> find = postRepository.findPostsByChannel(10);
+
+        Publisher<Post> composite = Mono.from(setup).thenMany(find);
+
+        StepVerifier
+                .create(composite)
+                .consumeNextWith(foundPost ->{
+                    assertEquals(post.getPostId(),foundPost.getPostId());
+                    assertEquals(post.getImageId(),foundPost.getImageId());
+                    assertEquals(post.getCaption(),foundPost.getCaption());
+                    assertEquals(post.getChannel(),foundPost.getChannel());
+                }).verifyComplete();
     }
 }
